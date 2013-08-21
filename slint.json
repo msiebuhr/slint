@@ -1,0 +1,5 @@
+{
+    "trailing-spaces": {
+        "files": [ "test/", "lib/", "bin/" ]
+    }
+}

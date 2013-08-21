@@ -1,0 +1,101 @@
+#!/usr/bin/env node
+
+var _ = require('underscore'),
+    optimist = require('optimist'),
+    findFiles = require('../lib/findFiles'),
+    async = require('async'),
+    fs = require('fs');
+
+// Parse arguments
+var argparser = optimist
+    .boolean(['no-ignore']) // Hack: Inverse if 'ignore'; takes no arguments if boolean
+    .usage('$0 <slint.json>')
+    .wrap(80)
+    .demand(1)
+    .options('v', {
+        alias: 'verbose',
+        boolean: true,
+        default: false
+    })
+    .options('h', {
+        alias: 'help',
+        boolean: true,
+        description: 'Show this help'
+    })
+    .options('ignore', {
+        default: ['node_modules', '3rdparty'],
+        description: 'Files and directories to ignore. Use multiple times to set multiple values. Disabled with --no-ignore.'
+    });
+
+var args = argparser.argv;
+
+if (args.help) {
+    argparser.showHelp();
+    process.exit(0);
+}
+
+// Fix up args.ignore
+if (!args.ignore) { args.ignore = []; }
+if (!Array.isArray(args.ignore)) {
+    args.ignore = [args.ignore];
+}
+
+function printVerbose() {
+    if (!args.verbose) { return; }
+    process.stdout.write(Array.prototype.slice.call(arguments, 0).join(" ") + '\n');
+}
+
+function findAllFiles(pathlist, ignores, extensions, cb) {
+    async.reduce(pathlist, [], function (paths, thisPath, cb) {
+        findFiles(thisPath, ignores, extensions, function (err, fileList) {
+            return cb(err, [].concat(paths, fileList));
+        });
+    }, cb)
+}
+
+// Read slint.json
+fs.readFile(args._[0], 'utf-8', function (err, rawJson){
+    var json = JSON.parse(rawJson);
+
+    // Run each linter in parallel
+    async.map(Object.keys(json), function (linterName, cb) {
+        printVerbose('Running', linterName, 'with', JSON.stringify(json[linterName]));
+
+        var linter,
+            linterSetup = json[linterName];
+
+        try {
+            linter = require('../lib/linters/' + linterName)
+        } catch (e) {
+            return cb(new Error('No linter named ' + linterName));
+        }
+
+        // Traverse the file-system to find files to lint
+        findAllFiles(linterSetup.files, args.ignore, ['.js', ''], function (err, files) {
+            // Read each file
+            async.map(files, function (filename, cb) {
+                fs.readFile(filename, 'utf-8', function (err, data) {
+                    printVerbose('Linting', filename, 'with', linterName);
+                    // Do the actual linting
+                    linter(filename, data, {}, cb);
+                });
+            }, function (err, errorList) {
+                // Collect the results and pass the joint array back
+                return cb(err, _.flatten(errorList));
+            });
+        });
+    }, function (err, errorList) {
+        // Flatten result-list
+        errorList = _.flatten(errorList || []);
+
+        // Pretty-print
+        errorList.forEach(function (err) {
+            console.log('ERROR:', err)
+        })
+        
+        // Set error-code to number of errors
+        process.exit(errorList ? Math.min(errorList.length, 254) : 0);
+    });
+});
+
+// vi: filetype=javascript
