@@ -14,7 +14,7 @@
     "lint"
   ],
   "author": "Morten Siebuhr",
-  "license": "BSD-2-Clause",
+  "license": "BSD",
   "bugs": {
     "url": "https://github.com/msiebuhr/slint/issues"
   }
