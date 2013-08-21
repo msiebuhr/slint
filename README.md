@@ -7,22 +7,26 @@ Lint-tool for web projects
 
 Place a `slint.json` in your project root with contents roughly like this:
 
-    {
-        "jshint": {
-	        "files": ["./frontend-code", "!3rdparty"],
-		    "config": "./misc/jshint-frontend.conf"
-	    },
-	    "jshint": {
-	        "files": ["./lib", "./test"],
-		    "config": "./misc/jshint-nodejs.conf"
-	    },
-	    "trailing-whitespace": {
-	        "files": ["."],
-	    },
-	    "json": {
-	        "files": [".", "!node_modules", "!3rdparty"],
-	    }
-    }
+    [
+        {
+            "tool": "jshint",
+            "files": ["./frontend-code", "!3rdparty"],
+            "config": "./misc/jshint-frontend.conf"
+        },
+        {
+            "tool": "jshint",
+            "files": ["./lib", "./test"],
+            "config": "./misc/jshint-nodejs.conf"
+        },
+        {
+            "tool": "trailing-whitespace",
+            "files": ["."],
+        },
+        {
+            "tool": "json",
+            "files": [".", "!node_modules", "!3rdparty"],
+        }
+    ]
 
 Running `slint` will then run the given linters on all the relevant files and
 report the collected results.
