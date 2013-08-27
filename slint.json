@@ -2,5 +2,9 @@
     {
         "tool": "trailing-spaces",
         "files": [ "test/", "lib/", "bin/" ]
+    },
+    {
+        "tool": "jshint",
+        "files": ["test/", "lib/", "bin/"]
     }
 ]

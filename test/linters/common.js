@@ -35,14 +35,14 @@ function generateTests(testName) {
 
             before(function (done) {
                 l('fileName', basicTests[testName].fail, {}, function (err, errors) {
-                    assert.isArray(errors, 'Expected a list of errors.')
+                    assert.isArray(errors, 'Expected a list of errors.');
                     errList = errors;
                     done(err);
                 });
             });
 
             it('Returns at least one error', function () {
-                assert.operator(errList.length, '>', 0, 'Expected at least one error')
+                assert.operator(errList.length, '>', 0, 'Expected at least one error');
             });
 
             it('Has err.filename = fileName', function () {
@@ -61,7 +61,7 @@ function generateTests(testName) {
             it('Has .character = <some number>', function () {
                 errList.forEach(function (err) {
                     assert.property(err, 'character');
-                    assert.isNumber(err.character)
+                    assert.isNumber(err.character);
                 });
             });
         });
