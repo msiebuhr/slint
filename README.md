@@ -43,11 +43,11 @@ Linters
 -------
 
  * Trailing whitespace
- * jshint (TODO)
+ * jshint
  * less (TODO)
- * JSON (TODO)
- * Installed NPM packages vs. package.json
- * package.json sanity checks
+ * JSON (a simple `try`/`catch` around `JSON.parse()` for now)
+ * Installed NPM packages vs. package.json (TODO)
+ * package.json sanity checks (TODO)
  * ...
 
 License
