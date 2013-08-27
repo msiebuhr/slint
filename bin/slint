@@ -79,7 +79,7 @@ fs.readFile(args._[0], 'utf-8', function (err, rawJson){
                 fs.readFile(filename, 'utf-8', function (err, data) {
                     printVerbose('Linting', filename, 'with', directive.tool);
                     // Do the actual linting
-                    linter(filename, data, {}, cb);
+                    linter(filename, data, linterSetup, cb);
                 });
             }, function (err, errorList) {
                 // Collect the results and pass the joint array back
