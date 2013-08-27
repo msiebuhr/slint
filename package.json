@@ -23,5 +23,9 @@
     "minimatch": "~0.2.12",
     "optimist": "~0.6.0",
     "underscore": "~1.5.1"
+  },
+  "devDependencies": {
+    "chai": "~1.7.2",
+    "mocha": "~1.12.0"
   }
 }
