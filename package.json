@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "async": "~0.2.9",
+    "jshint": "~2.1.10",
     "minimatch": "~0.2.12",
     "optimist": "~0.6.0",
     "underscore": "~1.5.1"
