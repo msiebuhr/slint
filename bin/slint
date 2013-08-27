@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 
 var _ = require('underscore'),
-    optimist = require('optimist'),
-    findFiles = require('../lib/findFiles'),
     async = require('async'),
-    fs = require('fs');
+    defaultReporter = require('../lib/reporters/default'),
+    findFiles = require('../lib/findFiles'),
+    fs = require('fs'),
+    optimist = require('optimist');
 
 // Parse arguments
 var argparser = optimist
@@ -90,9 +91,8 @@ fs.readFile(args._[0], 'utf-8', function (err, rawJson){
         errorList = _.flatten(errorList || []);
 
         // Pretty-print
-        errorList.forEach(function (err) {
-            console.log('ERROR:', err)
-        })
+        //errorList.forEach(function (err) { console.log('ERROR:', err) })
+        defaultReporter(errorList, {}, process.stdout);
         
         // Set error-code to number of errors
         process.exit(errorList ? Math.min(errorList.length, 254) : 0);
