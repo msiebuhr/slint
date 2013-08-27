@@ -1,5 +1,4 @@
-var assert = require('chai').assert,
-    trailingWhitespace = require('../../lib/linters/trailing-spaces');
+var assert = require('chai').assert;
 
 /*global describe, it*/
 

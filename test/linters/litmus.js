@@ -2,23 +2,19 @@ var assert = require('chai').assert;
 
 var tests = [{
     linter: 'json',
-    config: {
-        canonical: false
-    },
+    config: { canonical: false },
     data: '{"b": 1, "a": 1}',
     shouldPass: true
 }, {
     linter: 'json',
-    config: {
-        canonical: true
-    },
+    config: { canonical: true },
     data: '{"b": 1, "a": 1}',
     shouldPass: false
 }];
 
 describe('linters/litmus', function () {
-    tests.forEach(function (test) {
-        it(test.linter + " with " + test.data + " should " + (test.shouldPass ? 'pass' : 'fail'), function (done) {
+    tests.forEach(function (test, index) {
+        it(test.linter + ' / #' + index, function (done) {
             var l = require('../../lib/linters/' + test.linter);
             l('test', test.data, test.config, function (err, errList) {
                 if (test.shouldPass) {
