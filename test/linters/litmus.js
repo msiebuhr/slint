@@ -12,6 +12,16 @@ var tests = [{
     shouldPass: false
 }, {
     linter: 'json',
+    config: { canonical: true },
+    data: '{"a": 1, "b": [{"a": 1, "b": 1}]}',
+    shouldPass: true
+}, {
+    linter: 'json',
+    config: { canonical: true },
+    data: '{"a": 1, "b": [{"b": 1, "a": 1}]}',
+    shouldPass: false
+}, {
+    linter: 'json',
     config: { indent: 2 },
     data: '{\n  "b": 1,\n  "a": 1\n}',
     shouldPass: true
