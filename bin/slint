@@ -51,7 +51,7 @@ function findAllFiles(pathlist, ignores, extensions, cb) {
         findFiles(thisPath, ignores, extensions, function (err, fileList) {
             return cb(err, [].concat(paths, fileList));
         });
-    }, cb)
+    }, cb);
 }
 
 // Read slint.json
@@ -67,7 +67,7 @@ fs.readFile(args._[0], 'utf-8', function (err, rawJson){
             linterSetup = directive.config || {};
 
         try {
-            linter = require('../lib/linters/' + directive.tool)
+            linter = require('../lib/linters/' + directive.tool);
         } catch (e) {
             return cb(new Error('No linter named ' + directive.tool));
         }
@@ -93,7 +93,7 @@ fs.readFile(args._[0], 'utf-8', function (err, rawJson){
         // Pretty-print
         //errorList.forEach(function (err) { console.log('ERROR:', err) })
         defaultReporter(errorList, {}, process.stdout);
-        
+
         // Set error-code to number of errors
         process.exit(errorList ? Math.min(errorList.length, 254) : 0);
     });
