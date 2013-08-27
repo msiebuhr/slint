@@ -25,6 +25,10 @@ Place a `slint.json` in your project root with contents roughly like this:
         {
             "tool": "json",
             "files": [".", "!node_modules", "!3rdparty"],
+			"config": {
+				"indent": "  ",     // Force this indent
+				"canonical": false  // Sort object keys?
+			}
         }
     ]
 
@@ -45,10 +49,13 @@ Linters
  * Trailing whitespace
  * jshint
  * less (TODO)
- * JSON (a simple `try`/`catch` around `JSON.parse()` for now)
+ * JSON
+   * Configuration: `canonical` (default: `false`) - checks if keys are sorted.
+	 `indent` (default: off) will check if the file is indented with the given
+	 string.
  * Installed NPM packages vs. package.json (TODO)
  * package.json sanity checks (TODO)
- * ...
+ * HTML (TODO)
 
 License
 -------
