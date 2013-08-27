@@ -10,6 +10,21 @@ var tests = [{
     config: { canonical: true },
     data: '{"b": 1, "a": 1}',
     shouldPass: false
+}, {
+    linter: 'json',
+    config: { indent: 2 },
+    data: '{\n  "b": 1,\n  "a": 1\n}',
+    shouldPass: true
+}, {
+    linter: 'json',
+    config: { indent: 2 },
+    data: '{\n    "b": 1,\n    "a": 1\n}',
+    shouldPass: false
+}, {
+    linter: 'json',
+    config: { indent: 2 },
+    data: '{\n  "b": 1,\n  "a": 1\n}\n\n', // Trailing newlines at EOF shouldn't matter
+    shouldPass: true
 }];
 
 describe('linters/litmus', function () {
