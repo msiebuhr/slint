@@ -11,6 +11,10 @@ var basicTests = {
     'jshint': {
         ok: 'return 1+1;',
         fail: 'return return'
+    },
+    'json': {
+        ok: '{"foo": "bar"}',
+        fail: '{x}'
     }
 };
 

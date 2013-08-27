@@ -6,5 +6,9 @@
     {
         "tool": "jshint",
         "files": ["test/", "lib/", "bin/"]
+    },
+    {
+        "tool": "json",
+        "files": ["package.json"]
     }
 ]
