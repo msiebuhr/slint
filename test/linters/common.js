@@ -49,7 +49,7 @@ function generateTests(testName) {
                 assert.operator(errList.length, '>', 0, 'Expected at least one error');
             });
 
-            it('Has err.filename = fileName', function () {
+            it('Has .filename = <given filename>', function () {
                 errList.forEach(function (err) {
                     assert.propertyVal(err, 'filename', 'fileName');
                 });
@@ -66,6 +66,17 @@ function generateTests(testName) {
                 errList.forEach(function (err) {
                     assert.property(err, 'character');
                     assert.isNumber(err.character);
+                });
+            });
+
+            it('Has .message = <some string>.', function () {
+                errList.forEach(function (err) {
+                    assert.property(err, 'message');
+                    assert.isString(err.message);
+                    assert.match(
+                        err.message, /\.$/,
+                        'Expected "' + err.message + '" to end with a .'
+                    );
                 });
             });
         });
