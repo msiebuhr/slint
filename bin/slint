@@ -90,12 +90,14 @@ fs.readFile(args._[0], 'utf-8', function (err, rawJson){
         // Flatten result-list
         errorList = _.flatten(errorList || []);
 
-        // Pretty-print
-        //errorList.forEach(function (err) { console.log('ERROR:', err) })
-        defaultReporter(errorList, {}, process.stdout);
-
-        // Set error-code to number of errors
-        process.exit(errorList ? Math.min(errorList.length, 254) : 0);
+        // Pipe the output to the default reporter, pipe that to stdout and
+        // wait for it to finish.
+        defaultReporter(errorList, {})
+            .pipe(process.stdout)
+            .on('end', function () {
+                // Set error-code to number of errors
+                process.exit(errorList ? Math.min(errorList.length, 254) : 0);
+            });
     });
 });
 
