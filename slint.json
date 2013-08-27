@@ -9,6 +9,10 @@
     },
     {
         "tool": "json",
-        "files": ["package.json"]
+        "files": ["package.json"],
+        "config": {
+            "canonical": false,
+            "indent": 2
+        }
     }
 ]
