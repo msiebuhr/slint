@@ -47,11 +47,12 @@ function printVerbose() {
 }
 
 function findAllFiles(pathlist, ignores, extensions, cb) {
-    async.reduce(pathlist, [], function (paths, thisPath, cb) {
-        findFiles(thisPath, ignores, extensions, function (err, fileList) {
-            return cb(err, [].concat(paths, fileList));
-        });
-    }, cb);
+    async.map(pathlist, function (thisPath, cb) {
+        findFiles(thisPath, ignores, extensions, cb);
+    }, function (err, paths) {
+        if (err) { return cb(err); }
+        cb(undefined, Array.prototype.concat.apply([], paths));
+    });
 }
 
 // Read slint.json
