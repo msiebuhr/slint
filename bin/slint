@@ -4,7 +4,7 @@ var _ = require('underscore'),
     async = require('async'),
     defaultReporter = require('../lib/reporters/default'),
     findFiles = require('../lib/findFiles'),
-    fs = require('fs'),
+    fs = require('../lib/fs'),
     optimist = require('optimist');
 
 // Parse arguments
