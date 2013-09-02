@@ -48,6 +48,16 @@ var testTable = [{
         });
         done();
     }
+},{
+    files: ['**'],
+    name: 'returns no directories',
+    test: function (files, done) {
+        var fs = require('fs');
+        files.forEach(function (f) {
+            assert.isTrue(fs.statSync(f).isFile(), f + ' is not a file!');
+        });
+        done();
+    }
 }];
 
 describe('gitFileResolver()', function () {
