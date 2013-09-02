@@ -57,6 +57,11 @@ Linters
  * package.json sanity checks (TODO)
  * HTML (TODO)
 
+See also
+--------
+
+ * [nlint](https://github.com/codenothing/Nlint)
+
 License
 -------
 
