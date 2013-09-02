@@ -3,7 +3,7 @@
 var _ = require('underscore'),
     async = require('async'),
     defaultReporter = require('../lib/reporters/default'),
-    findFiles = require('../lib/findFiles'),
+    gitFileResolver = require('../lib/gitFileResolver'),
     fs = require('../lib/fs'),
     optimist = require('optimist');
 
@@ -46,15 +46,6 @@ function printVerbose() {
     process.stdout.write(Array.prototype.slice.call(arguments, 0).join(" ") + '\n');
 }
 
-function findAllFiles(pathlist, ignores, extensions, cb) {
-    async.map(pathlist, function (thisPath, cb) {
-        findFiles(thisPath, ignores, extensions, cb);
-    }, function (err, paths) {
-        if (err) { return cb(err); }
-        cb(undefined, Array.prototype.concat.apply([], paths));
-    });
-}
-
 // Read slint.json
 fs.readFile(args._[0], 'utf-8', function (err, rawJson){
     var json = JSON.parse(rawJson);
@@ -64,7 +55,7 @@ fs.readFile(args._[0], 'utf-8', function (err, rawJson){
         printVerbose('Running', JSON.stringify(directive));
 
         var linter,
-            linterFiles = directive.files || ['.'],
+            linterFiles = directive.files || ['**'],
             linterSetup = directive.config || {};
 
         try {
@@ -74,7 +65,7 @@ fs.readFile(args._[0], 'utf-8', function (err, rawJson){
         }
 
         // Traverse the file-system to find files to lint
-        findAllFiles(linterFiles, args.ignore, ['.js', ''], function (err, files) {
+        gitFileResolver(linterFiles, function (err, files) {
             if (err) { return cb(err, []); }
 
             // Read each file

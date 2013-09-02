@@ -10,21 +10,21 @@ Place a `slint.json` in your project root with contents roughly like this:
     [
         {
             "tool": "jshint",
-            "files": ["./frontend-code", "!3rdparty"],
+            "files": ["./frontend-code/**/*.js", "!3rdparty"],
             "config": "./misc/jshint-frontend.conf"
         },
         {
             "tool": "jshint",
-            "files": ["./lib", "./test"],
+            "files": ["lib/**.js", "test/**.js" ],
             "config": "./misc/jshint-nodejs.conf"
         },
         {
             "tool": "trailing-whitespace",
-            "files": ["."],
+            "files": ["**", "!node_modules", "!3rdparty"],
         },
         {
             "tool": "json",
-            "files": [".", "!node_modules", "!3rdparty"],
+            "files": ["**/*.json", "!node_modules", "!3rdparty"],
 			"config": {
 				"indent": "  ",     // Force this indent
 				"canonical": false  // Sort object keys?

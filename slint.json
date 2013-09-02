@@ -1,11 +1,11 @@
 [
     {
         "tool": "trailing-spaces",
-        "files": [ "test/", "lib/", "bin/" ]
+        "files": [ "**", "!node_modules" ]
     },
     {
         "tool": "jshint",
-        "files": ["test/", "lib/", "bin/"]
+        "files": ["**/*.js", "!node_modules/" ]
     },
     {
         "tool": "json",
