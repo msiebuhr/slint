@@ -88,14 +88,21 @@ Linters
 
  * Trailing whitespace
  * jshint
- * less (TODO)
  * JSON
    * Configuration: `canonical` (default: `false`) - checks if keys are sorted.
 	 `indent` (default: off) will check if the file is indented with the given
 	 string.
- * Installed NPM packages vs. package.json (TODO)
- * package.json sanity checks (TODO)
- * HTML (TODO)
+
+#### TODO
+
+ * less
+ * HTML
+ * package.json (all packages are pinned to versions, where to publish, ...)
+ * Installed NPM packages vs. package.json
+ * package.json sanity checks
+ * Check magic bytes binary data vs. extension
+ * JPEGs are RGB (and not CMYK)
+ * Consistent indentation (tabs vs spaces. And how many?)
 
 See also
 --------
