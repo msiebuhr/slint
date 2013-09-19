@@ -3,8 +3,6 @@ slint
 
 Lint-tool for web projects
 
-(Note: Still doesn't quite work like this, but it's getting there...)
-
 Place a `slint.json` in your project root with contents roughly like this:
 
     [
@@ -26,8 +24,8 @@ Place a `slint.json` in your project root with contents roughly like this:
             "tool": "json",
             "files": ["**/*.json", "!node_modules", "!3rdparty"],
 			"config": {
-				"indent": "  ",     // Force this indent
-				"canonical": false  // Sort object keys?
+				"indent": "  ",     // Use two spaces
+				"canonical": false  // Don't sort object keys
 			}
         }
     ]
