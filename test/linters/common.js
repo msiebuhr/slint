@@ -14,6 +14,10 @@ var basicTests = {
     'json': {
         ok: '{"foo": "bar"}',
         fail: '{x}'
+    },
+    less: {
+        ok: "@base: #fff;",
+        fail: '@import "foobar"'
     }
 };
 

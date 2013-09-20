@@ -21,6 +21,7 @@
     "async": "~0.2.9",
     "glob": "~3.2.6",
     "jshint": "~2.1.10",
+    "less": "~1.4.2",
     "memoizeasync": "~0.3.0",
     "minimatch": "~0.2.12",
     "optimist": "~0.6.0",
