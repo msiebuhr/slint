@@ -1,4 +1,5 @@
-var assert = require('chai').assert;
+var assert = require('chai').assert,
+    fs = require('fs');
 
 /*global describe, it*/
 
@@ -18,6 +19,10 @@ var basicTests = {
     less: {
         ok: "@base: #fff;",
         fail: '@import "foobar"'
+    },
+    'npm-packages': {
+        ok: fs.readFileSync('./package.json', 'utf-8'),
+        fail: '{}'
     }
 };
 
