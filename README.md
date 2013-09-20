@@ -3,7 +3,52 @@ slint
 
 Lint-tool for web projects
 
-Place a `slint.json` in your project root with contents roughly like this:
+What it does
+------------
+
+It takes a basic recipe of what linters you want to apply to which files (and,
+optionally, the linter configuration):
+
+    [
+        {
+            "tool": "jshint",
+            "files": ["**/*.js", "!node_modules"],
+        },
+        {
+            "tool": "trailing-whitespace",
+            "files": ["**", "!node_modules"],
+        },
+        {
+            "tool": "json",
+            "files": ["**/*.json", "!node_modules"],
+        }
+    ]
+
+Running the tool with this configuration file will use gitignore-style
+expansion to figure out what file to lint and run them through the relevant
+linter and report any errors.
+
+Trying it out
+-------------
+
+ 1. Install `slint` using `npm install slint`.
+ 2. Copy/paste the example code below into a `slint.json` in the root of your project.
+ 3. Run `./node_modules/.bin/slint slint.json`.
+
+If you want to add slint as a git pre-commit hook, fire off the following stanza:
+
+    echo ./node_modules/.bin/slint slint.json > .git/hooks/pre-commit
+    chmod +x .git/hooks/pre-commit
+
+Advanced slinting
+-----------------
+
+The linters can be given optional configurations (strings will be read as JSON
+files and objects will be passed directly).
+
+It is also important that linters can be run multiple times with different
+configurations/different files. (Ex. to allow ES5-stuff in Node.js-code, but
+disallow it in front-end code.)
 
     [
         {
@@ -29,9 +74,6 @@ Place a `slint.json` in your project root with contents roughly like this:
 			}
         }
     ]
-
-Running `slint` will then run the given linters on all the relevant files and
-report the collected results.
 
 Goals
 -----
