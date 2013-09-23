@@ -86,7 +86,7 @@ Goals
 Linters
 -------
 
- * `trailing-whitespace`: Verifies that files doesn't have lines ending with
+ * `trailing-spaces`: Verifies that files doesn't have lines ending with
    whitespace-characters.
  * `jshint`:
    * Configuration is an ordinary jshint-configuration.
