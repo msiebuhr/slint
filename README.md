@@ -86,19 +86,22 @@ Goals
 Linters
 -------
 
- * Trailing whitespace
- * jshint
- * JSON
+ * `trailing-whitespace`: Verifies that files doesn't have lines ending with
+   whitespace-characters.
+ * `jshint`:
+   * Configuration is an ordinary jshint-configuration.
+ * `json`:
    * Configuration: `canonical` (default: `false`) - checks if keys are sorted.
 	 `indent` (default: off) will check if the file is indented with the given
 	 string.
+ * `npm-packages`: Compares what's in `package.json` versus output of `npm ls`.
+ * `less`: Runs files through the less-compiler and checks for parse-errors.
 
 #### TODO
 
- * less
  * HTML
+ * CSS
  * package.json (all packages are pinned to versions, where to publish, ...)
- * Installed NPM packages vs. package.json
  * package.json sanity checks
  * Check magic bytes binary data vs. extension
  * JPEGs are RGB (and not CMYK)
