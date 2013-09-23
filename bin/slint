@@ -61,7 +61,7 @@ fs.readFile(args._[0], 'utf-8', function (err, rawJson){
         try {
             linter = require('../lib/linters/' + directive.tool);
         } catch (e) {
-            return cb(new Error('No linter named ' + directive.tool));
+            return cb(new Error('Failed loading "' + directive.tool + '": ' + e.message));
         }
 
         // Traverse the file-system to find files to lint
@@ -94,6 +94,11 @@ fs.readFile(args._[0], 'utf-8', function (err, rawJson){
             });
         });
     }, function (err, errorList) {
+        if (err) {
+            process.stdout.write('FATAL ERROR: ' + err.message + '\n');
+            return;
+        }
+
         // Flatten result-list
         errorList = _.flatten(errorList || []);
 
