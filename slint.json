@@ -14,5 +14,13 @@
             "canonical": false,
             "indent": 2
         }
+    },
+    {
+        "tool": "json",
+        "files": ["**/*.json", "!node_modules", "!package.json"]
+    },
+    {
+        "tool": "npm-packages",
+        "files": ["package.json"]
     }
 ]
