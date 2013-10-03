@@ -8,6 +8,10 @@ var basicTests = {
         ok: 'bar\nbaz\n',
         fail: 'bar \nbaz\n'
     },
+    'finalnewline': {
+        ok: 'foo\nbar\n',
+        fail: 'foo\nbar'
+    },
     'indentation': {
         ok: '\tfoo\n\t\tbar',
         fail: ' \tfoo\n\t bar'
