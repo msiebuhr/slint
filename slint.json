@@ -4,6 +4,18 @@
         "files": [ "**", "!node_modules" ]
     },
     {
+        "tool": "finalnewline",
+        "files": ["**", "!node_modules"]
+    },
+    {
+        "tool": "indentation",
+        "files":["**/*.js", "!node_modules"],
+        "config": {
+            "indentChar": " ",
+            "indentNumber": 4
+        }
+    },
+    {
         "tool": "jshint",
         "files": ["**/*.js", "!node_modules/" ]
     },
