@@ -4,7 +4,7 @@ var _ = require('underscore'),
     async = require('async'),
     defaultReporter = require('../lib/reporters/default'),
     gitFileResolver = require('../lib/gitFileResolver'),
-    fs = require('../lib/fs'),
+    fs = require('fs'),
     optimist = require('optimist');
 
 // Parse arguments
@@ -22,6 +22,11 @@ var argparser = optimist
         alias: 'help',
         boolean: true,
         description: 'Show this help'
+    })
+    .options('cache', {
+        boolean: true,
+        default: false,
+        description: 'Cache the results of file system operations (experimental)'
     })
     .options('ignore', {
         default: ['node_modules', '3rdparty'],
@@ -44,6 +49,10 @@ if (!Array.isArray(args.ignore)) {
 function printVerbose() {
     if (!args.verbose) { return; }
     process.stdout.write(Array.prototype.slice.call(arguments, 0).join(" ") + '\n');
+}
+
+if (args.cache) {
+    require('cachedfs').patchInPlace();
 }
 
 // Read slint.json
