@@ -2,6 +2,7 @@
 
 var _ = require('underscore'),
     async = require('async'),
+    Path = require('path'), // Import with an upper case name so it's less likely to collide with a variable name
     defaultReporter = require('../lib/reporters/default'),
     gitFileResolver = require('../lib/gitFileResolver'),
     fs = require('fs'),
@@ -28,6 +29,13 @@ var argparser = optimist
         default: false,
         description: 'Cache the results of file system operations (experimental)'
     })
+    .options('git', {
+        // TODO: Make it possible to address arbitrary branches/tags/commits, the index or the changes in the index.
+        // This is already supported by fsplusgit, it just needs to be mapped to command line switches
+        description: 'Work on the staged changes of the current git repository (implicitly turns on --cache)',
+        default: false,
+        boolean: true
+    })
     .options('ignore', {
         default: ['node_modules', '3rdparty'],
         description: 'Files and directories to ignore. Use multiple times to set multiple values. Disabled with --no-ignore.'
@@ -51,12 +59,40 @@ function printVerbose() {
     process.stdout.write(Array.prototype.slice.call(arguments, 0).join(" ") + '\n');
 }
 
-if (args.cache) {
+var baseDir = process.cwd();
+
+if (args.git) {
+    require('fsplusgit').patchInPlace();
+    require('cachedfs').patchInPlace();
+    var cwdFragments = process.cwd().split('/'), // ['', 'foo', 'bar'],
+        pathToGitRepo;
+
+    for (var i = cwdFragments.length ; i > 0 ; i -= 1) {
+        var ancestorDir = cwdFragments.slice(0, i).join('/'),
+            pathToPotentialGitFolder = Path.resolve(ancestorDir, '.git'),
+            stats;
+        try {
+            stats = fs.statSync(pathToPotentialGitFolder);
+        } catch (e) {}
+        if (stats && stats.isDirectory()) {
+            pathToGitRepo = pathToPotentialGitFolder;
+            break;
+        }
+    }
+    if (pathToGitRepo) {
+        // Change to the same directory relative to the virtual gitFakeFs/HEAD directory:
+        var cwdRelativeToWorkingCopy = Path.relative(Path.resolve(pathToGitRepo, '..'), process.cwd()) || '.';
+
+        baseDir = Path.resolve(pathToGitRepo, 'gitFakeFs', 'index', cwdRelativeToWorkingCopy);
+    } else {
+        throw new Error('Not inside a git repository');
+    }
+} else if (args.cache) {
     require('cachedfs').patchInPlace();
 }
 
 // Read slint.json
-fs.readFile(args._[0], 'utf-8', function (err, rawJson){
+fs.readFile(Path.resolve(baseDir, args._[0]), 'utf-8', function (err, rawJson){
     if (err) {
         throw err;
     }
@@ -77,7 +113,7 @@ fs.readFile(args._[0], 'utf-8', function (err, rawJson){
         }
 
         // Traverse the file-system to find files to lint
-        gitFileResolver(linterFiles, function (err, files) {
+        gitFileResolver(linterFiles, baseDir, function (err, files) {
             if (err) { return cb(err, []); }
 
             // Read each file
