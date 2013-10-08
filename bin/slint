@@ -57,6 +57,9 @@ if (args.cache) {
 
 // Read slint.json
 fs.readFile(args._[0], 'utf-8', function (err, rawJson){
+    if (err) {
+        throw err;
+    }
     var json = JSON.parse(rawJson);
 
     // Run each linter in parallel
