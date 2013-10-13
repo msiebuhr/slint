@@ -59,7 +59,8 @@ function printVerbose() {
     process.stdout.write(Array.prototype.slice.call(arguments, 0).join(" ") + '\n');
 }
 
-var baseDir = process.cwd();
+var baseDir = process.cwd(),
+    globDir = baseDir;
 
 if (args.git) {
     require('fsplusgit').patchInPlace();
@@ -83,7 +84,8 @@ if (args.git) {
         // Change to the same directory relative to the virtual gitFakeFs/HEAD directory:
         var cwdRelativeToWorkingCopy = Path.relative(Path.resolve(pathToGitRepo, '..'), process.cwd()) || '.';
 
-        baseDir = Path.resolve(pathToGitRepo, 'gitFakeFs', 'index', cwdRelativeToWorkingCopy);
+        baseDir = Path.resolve(pathToGitRepo, 'gitFakeFs', 'indexOrWorkingCopy', cwdRelativeToWorkingCopy);
+        globDir = Path.resolve(pathToGitRepo, 'gitFakeFs', 'changesInIndex', cwdRelativeToWorkingCopy);
     } else {
         throw new Error('Not inside a git repository');
     }
@@ -113,7 +115,7 @@ fs.readFile(Path.resolve(baseDir, args._[0]), 'utf-8', function (err, rawJson){
         }
 
         // Traverse the file-system to find files to lint
-        gitFileResolver(linterFiles, baseDir, function (err, files) {
+        gitFileResolver(linterFiles, globDir, function (err, files) {
             if (err) { return cb(err, []); }
 
             // Read each file
@@ -122,6 +124,9 @@ fs.readFile(Path.resolve(baseDir, args._[0]), 'utf-8', function (err, rawJson){
                     //console.log(linterFiles, 'returns crap', files);
                     return cb();
                 }
+                // Absolutify:
+                filename = Path.resolve(baseDir, filename);
+
                 fs.readFile(filename, 'utf-8', function (err, data) {
                     if (err) {
                         cb(undefined, [{
