@@ -90,7 +90,7 @@ fs.readFile(args._[0], 'utf-8', function (err, rawJson){
                     if (err) {
                         return cb(undefined, [{
                             filename: filename,
-                            message: "Couldn't open file.",
+                            message: "Couldn't open file: " + err.message,
                             character: 0,
                             line: 0
                         }]);
