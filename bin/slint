@@ -81,7 +81,7 @@ fs.readFile(args._[0], 'utf-8', function (err, rawJson){
             if (err) { return cb(err, []); }
 
             // Read each file
-            async.map(files, function (filename, cb) {
+            async.mapLimit(files, 100, function (filename, cb) {
                 if (typeof filename !== 'string') {
                     //console.log(linterFiles, 'returns crap', files);
                     return cb();
