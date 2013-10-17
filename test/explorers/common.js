@@ -16,16 +16,27 @@ describe('Explorers', function () {
                 explorers[name](fs, undefined, function (err, linterList) {
                     delay = Date.now() - start;
                     output = linterList;
-                    done(err);    
+                    done(err);
                 });
             });
 
-            it('Less than 100ms', function () {
-                assert.operator(delay, '<', 100);
+            it('Less than 1500ms', function () {
+                assert.operator(delay, '<', 1500);
             });
 
-            it('Outputs a list', function () {
+            it('Outputs a list of objects with toolName, config & filename', function () {
                 assert.isArray(output);
+
+                output.forEach(function (d) {
+                    assert.property(d, 'toolName');
+                    assert.isString(d.toolName);
+
+                    assert.property(d, 'config');
+                    assert.isObject(d.config);
+
+                    assert.property(d, 'filename');
+                    assert.isString(d.filename);
+                });
             });
         });
     });
