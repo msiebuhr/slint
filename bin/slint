@@ -2,6 +2,7 @@
 
 var _ = require('underscore'),
     async = require('async'),
+    glob = require('glob-papandreou'),
     Path = require('path'), // Import with an upper case name so it's less likely to collide with a variable name
     defaultReporter = require('../lib/reporters/default'),
     gitFileResolver = require('../lib/gitFileResolver'),

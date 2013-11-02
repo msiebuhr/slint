@@ -21,7 +21,7 @@
     "async": "~0.2.9",
     "cachedfs": "=0.3.1",
     "fsplusgit": "=0.1.5",
-    "glob": "~3.2.6",
+    "glob-papandreou": "~3.2.6-patch1",
     "jshint": "~2.1.10",
     "less": "~1.4.2",
     "minimatch": "~0.2.12",
