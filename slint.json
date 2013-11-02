@@ -5,11 +5,11 @@
     },
     {
         "tool": "finalnewline",
-        "files": ["**", "!node_modules"]
+        "files": ["**", "!node_modules" ]
     },
     {
         "tool": "indentation",
-        "files":["**/*.js", "!node_modules"],
+        "files": [ "**/*.js", "!node_modules" ],
         "config": {
             "indentChar": " ",
             "indentNumber": 4
@@ -17,7 +17,7 @@
     },
     {
         "tool": "jshint",
-        "files": ["**/*.js", "!node_modules/" ]
+        "files": [ "**/*.js", "!node_modules" ]
     },
     {
         "tool": "json",
@@ -28,11 +28,11 @@
         }
     },
     {
-        "tool": "json",
-        "files": ["**/*.json", "!node_modules", "!package.json"]
+        "tool": "npm-packages",
+        "files": [ "package.json" ]
     },
     {
-        "tool": "npm-packages",
-        "files": ["package.json"]
+        "tool": "json",
+        "files": [ "**/*.json", "!node_modules", "!package.json" ]
     }
 ]
