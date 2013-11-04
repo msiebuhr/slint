@@ -119,56 +119,33 @@ fs.readFile(Path.resolve(baseDir, args._[0]), 'utf-8', function (err, rawJson){
         gitFileResolver(linterFiles, globDir, function (err, files) {
             if (err) { return cb(err, []); }
 
-            if (directive.tool === 'less' && args.git) {
-                glob('**/*.less', function (err, allLessFiles) {
+            // Read each file
+            async.mapLimit(files, 100, function (filename, cb) {
+                if (typeof filename !== 'string') {
+                    //console.log(linterFiles, 'returns crap', files);
+                    return cb();
+                }
+                // Absolutify:
+                filename = Path.resolve(baseDir, filename);
+
+                fs.readFile(filename, 'utf-8', function (err, data) {
                     if (err) {
-                        throw err;
+                        return cb(undefined, [{
+                            filename: filename,
+                            message: "Couldn't open file: " + err.message,
+                            character: 0,
+                            line: 0
+                        }]);
                     }
-                    async.eachLimit(allLessFiles, 100, fs.stat, function (err) {
-                        if (err) {
-                            throw err;
-                        }
-                        async.eachLimit(allLessFiles, 100, fs.readFile, function (err) {
-                            if (err) {
-                                throw err;
-                            }
-                            lintAllFoundFiles();
-                        });
-                    });
+                    printVerbose('Linting', filename, 'with', directive.tool);
+                    // Do the actual linting
+                    linter(filename, data, linterSetup, cb);
                 });
-            } else {
-                lintAllFoundFiles();
-            }
-
-            function lintAllFoundFiles() {
-                // Read each file
-                async.mapLimit(files, 100, function (filename, cb) {
-                    if (typeof filename !== 'string') {
-                        //console.log(linterFiles, 'returns crap', files);
-                        return cb();
-                    }
-                    // Absolutify:
-                    filename = Path.resolve(baseDir, filename);
-
-                    fs.readFile(filename, 'utf-8', function (err, data) {
-                        if (err) {
-                            return cb(undefined, [{
-                                filename: filename,
-                                message: "Couldn't open file: " + err.message,
-                                character: 0,
-                                line: 0
-                            }]);
-                        }
-                        printVerbose('Linting', filename, 'with', directive.tool);
-                        // Do the actual linting
-                        linter(filename, data, linterSetup, cb);
-                    });
-                }, function (err, errorList) {
-                    if (err) { return cb(err); }
-                    // Collect the results and pass the joint array back
-                    return cb(err, _.flatten(errorList));
-                });
-            }
+            }, function (err, errorList) {
+                if (err) { return cb(err); }
+                // Collect the results and pass the joint array back
+                return cb(err, _.flatten(errorList));
+            });
         });
     }, function (err, errorList) {
         if (err) {
