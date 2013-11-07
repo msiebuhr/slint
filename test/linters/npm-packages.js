@@ -66,4 +66,26 @@ describe('npm-packages', function () {
             });
         });
     });
+
+    describe('in a project with a package.json that has the same package listed under dependencies and devDependencies', function () {
+        var projectDirectory = Path.resolve(__dirname, 'npm-packages', 'sameDependencyListedTwice'),
+            packageJsonPath = Path.resolve(projectDirectory, 'package.json'),
+            packageJsonStr;
+
+        before(function (done) {
+            fs.readFile(packageJsonPath, 'utf-8', function (err, contents) {
+                packageJsonStr = contents;
+                done(err);
+            });
+        });
+        it('should output two errors', function (done) {
+            npmPackages(packageJsonPath, packageJsonStr, {}, function (err, results) {
+                assert.isArray(results);
+                assert.equal(results.length, 2);
+                assert.equal(results[0].message, 'devDependencies: The package a was already listed in the dependencies section, and with a different version specifier (1.2.3 vs. 1.4.7)');
+                assert.equal(results[1].message, 'optionalDependencies: The package b was already listed in the dependencies section');
+                done(err);
+            });
+        });
+    });
 });

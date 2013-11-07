@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "a": "1.2.3",
+    "b": "2.0.0"
+  },
+  "devDependencies": {
+    "a": "1.4.7"
+  },
+  "optionalDependencies": {
+    "b": "2.0.0"
+  }
+}
