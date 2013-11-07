@@ -88,4 +88,45 @@ describe('npm-packages', function () {
             });
         });
     });
+
+    describe('in a project with a dependency that is not installed in node_modules', function () {
+        var projectDirectory = Path.resolve(__dirname, 'npm-packages', 'dependencyNotInstalled'),
+            packageJsonPath = Path.resolve(projectDirectory, 'package.json'),
+            packageJsonStr;
+
+        before(function (done) {
+            fs.readFile(packageJsonPath, 'utf-8', function (err, contents) {
+                packageJsonStr = contents;
+                done(err);
+            });
+        });
+        it('should output one error', function (done) {
+            npmPackages(packageJsonPath, packageJsonStr, {}, function (err, results) {
+                assert.isArray(results);
+                assert.equal(results.length, 1);
+                assert.equal(results[0].message, 'Package b is not installed (expected version: 2.0.0).');
+                done(err);
+            });
+        });
+    });
+
+    describe('in a project with an optional dependency that is not installed in node_modules', function () {
+        var projectDirectory = Path.resolve(__dirname, 'npm-packages', 'optionalDependencyNotInstalled'),
+            packageJsonPath = Path.resolve(projectDirectory, 'package.json'),
+            packageJsonStr;
+
+        before(function (done) {
+            fs.readFile(packageJsonPath, 'utf-8', function (err, contents) {
+                packageJsonStr = contents;
+                done(err);
+            });
+        });
+        it('should output zero errors', function (done) {
+            npmPackages(packageJsonPath, packageJsonStr, {}, function (err, results) {
+                assert.isArray(results);
+                assert.equal(results.length, 0);
+                done(err);
+            });
+        });
+    });
 });
