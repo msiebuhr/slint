@@ -13,9 +13,7 @@ function loadTestCase(testName, cb) {
         if (err) {
             return cb(err);
         }
-        npmPackages(packageJsonPath, packageJsonStr, {}, function (err, results) {
-            cb(err, results);
-        });
+        npmPackages(packageJsonPath, packageJsonStr, {}, cb);
     });
 }
 
