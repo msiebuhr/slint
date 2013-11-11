@@ -2,6 +2,8 @@
 
 var _ = require('underscore'),
     async = require('async'),
+    glob = require('glob-papandreou'),
+    Path = require('path'), // Import with an upper case name so it's less likely to collide with a variable name
     defaultReporter = require('../lib/reporters/default'),
     gitFileResolver = require('../lib/gitFileResolver'),
     fs = require('fs'),
@@ -28,6 +30,13 @@ var argparser = optimist
         default: false,
         description: 'Cache the results of file system operations (experimental)'
     })
+    .options('git', {
+        // TODO: Make it possible to address arbitrary branches/tags/commits, the index or the changes in the index.
+        // This is already supported by fsplusgit, it just needs to be mapped to command line switches
+        description: 'Work on the staged changes of the current git repository (implicitly turns on --cache)',
+        default: false,
+        boolean: true
+    })
     .options('ignore', {
         default: ['node_modules', '3rdparty'],
         description: 'Files and directories to ignore. Use multiple times to set multiple values. Disabled with --no-ignore.'
@@ -51,19 +60,109 @@ function printVerbose() {
     process.stdout.write(Array.prototype.slice.call(arguments, 0).join(" ") + '\n');
 }
 
-if (args.cache) {
-    require('cachedfs').patchInPlace();
+var baseDir = process.cwd(),
+    defaultGlobDir = baseDir;
+
+function loadAndPreprocessDirectivesInConfigFile(cb) {
+    var pathToConfigFile = Path.resolve(process.cwd(), args._[0]),
+        pathToGitRepo,
+        gitIndexDir,
+        configFileDirRelativeToWorkingCopy;
+
+    if (args.git) {
+        require('fsplusgit').patchInPlace();
+        require('cachedfs').patchInPlace();
+        var cwdFragments = process.cwd().split('/'); // ['', 'foo', 'bar']
+
+        for (var i = cwdFragments.length ; i > 0 ; i -= 1) {
+            var ancestorDir = cwdFragments.slice(0, i).join('/'),
+                pathToPotentialGitFolder = Path.resolve(ancestorDir, '.git'),
+                stats;
+            try {
+                stats = fs.statSync(pathToPotentialGitFolder);
+            } catch (e) {}
+            if (stats && stats.isDirectory()) {
+                pathToGitRepo = pathToPotentialGitFolder + '/';
+                break;
+            }
+        }
+        if (pathToGitRepo) {
+            // Change to the same directory relative to the virtual gitFakeFs/HEAD directory:
+            configFileDirRelativeToWorkingCopy = Path.dirname(Path.relative(Path.resolve(pathToGitRepo, '..'), pathToConfigFile)) || '.';
+
+            baseDir = Path.resolve(pathToGitRepo, 'gitFakeFs', 'indexOrWorkingCopy', configFileDirRelativeToWorkingCopy);
+            defaultGlobDir = Path.resolve(pathToGitRepo, 'gitFakeFs', 'changesInIndex', configFileDirRelativeToWorkingCopy);
+            gitIndexDir = Path.resolve(pathToGitRepo, 'gitFakeFs', 'index', configFileDirRelativeToWorkingCopy);
+        } else {
+            throw new Error('Not inside a git repository');
+        }
+    } else if (args.cache) {
+        require('cachedfs').patchInPlace();
+    }
+
+    fs.readFile(pathToConfigFile, 'utf-8', function (err, configJsonStr) {
+        if (err) {
+            return cb(err);
+        }
+        var directives;
+        try {
+            directives = JSON.parse(configJsonStr);
+        } catch (e) {
+            return cb(e);
+        }
+        if (!Array.isArray(directives)) {
+            return cb(new Error(args._[0] + ' does must contain a JSON array'));
+        }
+        if (args.git && !/^\.\.\//.test(Path.join(configFileDirRelativeToWorkingCopy, args._[0]))) {
+            // The config file is under version control
+            fs.readFile(Path.resolve(pathToGitRepo, 'gitFakeFs', 'HEAD', configFileDirRelativeToWorkingCopy, args._[0]), 'utf-8', function (err, headConfigJsonStr) {
+                function giveUpAndLintEverything() {
+                    defaultGlobDir = gitIndexDir;
+                    cb(null, directives);
+                }
+                if (err) {
+                    if (err.code === 'ENOENT') {
+                        // The config file isn't found at HEAD, which means we cannot assume that the unstaged changes lint.
+                        return giveUpAndLintEverything();
+                    } else {
+                        cb(err);
+                    }
+                } else if (headConfigJsonStr === configJsonStr) {
+                    // No staged changes
+                    cb(null, directives);
+                } else {
+                    var directivesInHeadConfig;
+                    try {
+                        directivesInHeadConfig = JSON.parse(headConfigJsonStr);
+                    } catch (e) {}
+                    if (!Array.isArray(directivesInHeadConfig)) {
+                        // HEAD's copy of the config file didn't parse as JSON or didn't contain an array.
+                        giveUpAndLintEverything();
+                    }
+                    // Find all the directives in the current config that don't have an exact match in the HEAD config
+                    // and lint everything they match, not just the staged changes:
+                    directives.filter(function (directive) {
+                        return !directivesInHeadConfig.some(function (directiveInHeadConfig) {
+                            return _.isEqual(directiveInHeadConfig, directive);
+                        });
+                    }).forEach(function (directiveNotInHeadConfig) {
+                        directiveNotInHeadConfig.globDir = gitIndexDir;
+                    });
+                    cb(null, directives);
+                }
+            });
+        } else {
+            cb(null, directives);
+        }
+    });
 }
 
-// Read slint.json
-fs.readFile(args._[0], 'utf-8', function (err, rawJson){
+loadAndPreprocessDirectivesInConfigFile(function (err, directives) {
     if (err) {
         throw err;
     }
-    var json = JSON.parse(rawJson);
-
     // Run each linter in parallel
-    async.map(json, function (directive, cb) {
+    async.map(directives, function (directive, cb) {
         printVerbose('Running', JSON.stringify(directive));
 
         var linter,
@@ -77,7 +176,7 @@ fs.readFile(args._[0], 'utf-8', function (err, rawJson){
         }
 
         // Traverse the file-system to find files to lint
-        gitFileResolver(linterFiles, function (err, files) {
+        gitFileResolver(linterFiles, directive.globDir || defaultGlobDir, function (err, files) {
             if (err) { return cb(err, []); }
 
             // Read each file
@@ -86,6 +185,9 @@ fs.readFile(args._[0], 'utf-8', function (err, rawJson){
                     //console.log(linterFiles, 'returns crap', files);
                     return cb();
                 }
+                // Absolutify:
+                filename = Path.resolve(baseDir, filename);
+
                 fs.readFile(filename, 'utf-8', function (err, data) {
                     if (err) {
                         return cb(undefined, [{

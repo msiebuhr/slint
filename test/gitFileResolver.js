@@ -1,4 +1,5 @@
 var assert = require('chai').assert,
+    Path = require('path'),
     gfr = require('../lib/gitFileResolver');
 
 /*global describe, it*/
@@ -64,7 +65,7 @@ describe('gitFileResolver()', function () {
     testTable.forEach(function (test) {
         it(JSON.stringify(test.files) + ' ' + test.name, function (done) {
             // Execute the match and test the results
-            gfr(test.files, function (err, files) {
+            gfr(test.files, Path.resolve(__dirname, '..'), function (err, files) {
                 if (err) { return done(err); }
                 assert.isArray(files, "Didn't return an array");
                 files.forEach(function (file) {
