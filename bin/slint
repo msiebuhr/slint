@@ -64,9 +64,10 @@ var baseDir = process.cwd(),
     defaultGlobDir = baseDir;
 
 function loadAndPreprocessDirectivesInConfigFile(cb) {
-    var pathToGitRepo,
+    var pathToConfigFile = Path.resolve(process.cwd(), args._[0]),
+        pathToGitRepo,
         gitIndexDir,
-        cwdRelativeToWorkingCopy;
+        configFileDirRelativeToWorkingCopy;
 
     if (args.git) {
         require('fsplusgit').patchInPlace();
@@ -87,11 +88,11 @@ function loadAndPreprocessDirectivesInConfigFile(cb) {
         }
         if (pathToGitRepo) {
             // Change to the same directory relative to the virtual gitFakeFs/HEAD directory:
-            cwdRelativeToWorkingCopy = Path.relative(Path.resolve(pathToGitRepo, '..'), process.cwd()) || '.';
+            configFileDirRelativeToWorkingCopy = Path.dirname(Path.relative(Path.resolve(pathToGitRepo, '..'), pathToConfigFile)) || '.';
 
-            baseDir = Path.resolve(pathToGitRepo, 'gitFakeFs', 'indexOrWorkingCopy', cwdRelativeToWorkingCopy);
-            defaultGlobDir = Path.resolve(pathToGitRepo, 'gitFakeFs', 'changesInIndex', cwdRelativeToWorkingCopy);
-            gitIndexDir = Path.resolve(pathToGitRepo, 'gitFakeFs', 'index', cwdRelativeToWorkingCopy);
+            baseDir = Path.resolve(pathToGitRepo, 'gitFakeFs', 'indexOrWorkingCopy', configFileDirRelativeToWorkingCopy);
+            defaultGlobDir = Path.resolve(pathToGitRepo, 'gitFakeFs', 'changesInIndex', configFileDirRelativeToWorkingCopy);
+            gitIndexDir = Path.resolve(pathToGitRepo, 'gitFakeFs', 'index', configFileDirRelativeToWorkingCopy);
         } else {
             throw new Error('Not inside a git repository');
         }
@@ -99,7 +100,6 @@ function loadAndPreprocessDirectivesInConfigFile(cb) {
         require('cachedfs').patchInPlace();
     }
 
-    var pathToConfigFile = Path.resolve(baseDir, args._[0]);
     fs.readFile(pathToConfigFile, 'utf-8', function (err, configJsonStr) {
         if (err) {
             return cb(err);
@@ -113,9 +113,9 @@ function loadAndPreprocessDirectivesInConfigFile(cb) {
         if (!Array.isArray(directives)) {
             return cb(new Error(args._[0] + ' does must contain a JSON array'));
         }
-        if (args.git && !/^\.\.\//.test(Path.join(cwdRelativeToWorkingCopy, args._[0]))) {
+        if (args.git && !/^\.\.\//.test(Path.join(configFileDirRelativeToWorkingCopy, args._[0]))) {
             // The config file is under version control
-            fs.readFile(Path.resolve(pathToGitRepo, 'gitFakeFs', 'HEAD', cwdRelativeToWorkingCopy, args._[0]), 'utf-8', function (err, headConfigJsonStr) {
+            fs.readFile(Path.resolve(pathToGitRepo, 'gitFakeFs', 'HEAD', configFileDirRelativeToWorkingCopy, args._[0]), 'utf-8', function (err, headConfigJsonStr) {
                 function giveUpAndLintEverything() {
                     defaultGlobDir = gitIndexDir;
                     cb(null, directives);
