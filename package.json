@@ -29,8 +29,8 @@
     "underscore": "~1.5.1"
   },
   "devDependencies": {
-    "chai": "~1.7.2",
-    "mocha": "~1.14.0"
+    "mocha": "~1.14.0",
+    "unexpected": "1.0.4"
   },
   "directories": {
     "bin": "bin"

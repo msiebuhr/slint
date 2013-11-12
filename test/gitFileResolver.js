@@ -1,4 +1,4 @@
-var assert = require('chai').assert,
+var expect = require('unexpected'),
     gfr = require('../lib/gitFileResolver');
 
 /*global describe, it*/
@@ -7,44 +7,45 @@ var testTable = [{
     files: ['**/*.js'],
     name: 'returns only js-files',
     test: function (files, done) {
-        files.forEach(function (f) { assert.match(f, /\.js$/); });
+        files.forEach(function (f) { expect(f, 'to match', /\.js$/); });
         done();
     }
 },{
     files: ['**/*.js', '!node_modules'],
     name: 'returns nothing in node_modules',
     test: function (files, done) {
-        files.forEach(function (f) { assert.notInclude(f, 'node_modules'); });
+        files.forEach(function (f) { expect(f, 'not to contain', 'node_modules'); });
         done();
     }
 },{
     files: ['*.fake_ext'],
     name: 'returns no files',
     test: function (files, done) {
-        assert.lengthOf(files, 0);
+        expect(files, 'to be empty');
         done();
     }
 },{
     files: ['bin/*'],
     name: 'returns (at least) bin/slint',
     test: function (files, done) {
-        assert.include(files, 'bin/slint');
+        expect(files, 'to contain', 'bin/slint');
         done();
     }
 }, {
     files: ['package.json'],
     name: 'retuns only that file',
     test: function (files, done) {
-        assert.deepEqual(files, ['package.json']);
+        expect(files, 'to equal', ['package.json']);
         done();
     }
 },{
     files: ['**', '!**/*.js'],
     name: 'returns no js-files',
     test: function (files, done) {
-        assert.operator(files.length, '>', 0);
+        expect(files, 'to be an array');
+        expect(files, 'not to be empty');
         files.forEach(function (f) {
-            assert.notMatch(f, /\.js$/);
+            expect(f, 'not to match', /\.js$/);
         });
         done();
     }
@@ -54,7 +55,7 @@ var testTable = [{
     test: function (files, done) {
         var fs = require('fs');
         files.forEach(function (f) {
-            assert.isTrue(fs.statSync(f).isFile(), f + ' is not a file!');
+            expect(fs.statSync(f).isFile(), 'to be true', f + ' is not a file!');
         });
         done();
     }
@@ -66,9 +67,9 @@ describe('gitFileResolver()', function () {
             // Execute the match and test the results
             gfr(test.files, function (err, files) {
                 if (err) { return done(err); }
-                assert.isArray(files, "Didn't return an array");
+                expect(files, 'to be an array');
                 files.forEach(function (file) {
-                    assert.isString(file, "Returned non-string array element.");
+                    expect(file, 'to be a string');
                 });
                 test.test(files, done);
             });

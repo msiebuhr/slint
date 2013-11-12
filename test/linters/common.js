@@ -1,4 +1,4 @@
-var assert = require('chai').assert,
+var expect = require('unexpected'),
     fs = require('fs');
 
 /*global describe, it*/
@@ -44,8 +44,8 @@ function generateTests(testName) {
 
         it('Does not return errors on OK data', function (done) {
             l('fileName', basicTests[testName].ok, {}, function (err, errors) {
-                assert.isArray(errors);
-                assert.lengthOf(errors, 0);
+                expect(errors, 'to be an array');
+                expect(errors, 'to be empty');
                 done(err);
             });
         });
@@ -55,44 +55,41 @@ function generateTests(testName) {
 
             before(function (done) {
                 l('fileName', basicTests[testName].fail, {}, function (err, errors) {
-                    assert.isArray(errors, 'Expected a list of errors.');
+                    expect(errors, 'to be an array');
                     errList = errors;
                     done(err);
                 });
             });
 
             it('Returns at least one error', function () {
-                assert.operator(errList.length, '>', 0, 'Expected at least one error');
+                expect(errList.length, 'to be greater than', 0);
             });
 
             it('Has .filename = <given filename>', function () {
                 errList.forEach(function (err) {
-                    assert.propertyVal(err, 'filename', 'fileName');
+                    expect(err, 'to have property', 'filename', 'fileName');
                 });
             });
 
             it('Has .line = <some nubmer>', function () {
                 errList.forEach(function (err) {
-                    assert.property(err, 'line');
-                    assert.isNumber(err.line);
+                    expect(err, 'to have property', 'line');
+                    expect(err.line, 'to be a number');
                 });
             });
 
             it('Has .character = <some number>', function () {
                 errList.forEach(function (err) {
-                    assert.property(err, 'character');
-                    assert.isNumber(err.character);
+                    expect(err, 'to have property', 'character');
+                    expect(err.character, 'to be a number');
                 });
             });
 
             it('Has .message = <some string>.', function () {
                 errList.forEach(function (err) {
-                    assert.property(err, 'message');
-                    assert.isString(err.message);
-                    assert.match(
-                        err.message, /\.$/,
-                        'Expected "' + err.message + '" to end with a .'
-                    );
+                    expect(err, 'to have property', 'message');
+                    expect(err.message, 'to be a string');
+                    expect(err.message, 'to match', /\.$/);
                 });
             });
         });
