@@ -1,4 +1,4 @@
-var assert = require('chai').assert;
+var expect = require('unexpected');
 
 var tests = [{
     linter: 'json',
@@ -43,9 +43,9 @@ describe('linters/litmus', function () {
             var l = require('../../lib/linters/' + test.linter);
             l('test', test.data, test.config, function (err, errList) {
                 if (test.shouldPass) {
-                    assert.lengthOf(errList, 0, 'Should not retun any errors.');
+                    expect(errList, 'to be empty');
                 } else {
-                    assert.operator(errList.length, '>', 0, 'Should return errors.');
+                    expect(errList, 'not to be empty');
                 }
                 done(err);
             });

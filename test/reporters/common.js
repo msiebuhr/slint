@@ -1,4 +1,4 @@
-var assert = require('chai').assert,
+var expect = require('unexpected'),
     stream = require('stream');
 
 /*global describe, it*/
@@ -20,7 +20,7 @@ function generateTests(reporterName) {
                 outData += d;
             }).on('end', function () {
                 // Check output
-                assert.equal(outData, '');
+                expect(outData, 'to equal', '');
                 done();
             });
         });
@@ -41,24 +41,24 @@ function generateTests(reporterName) {
             });
 
             it('Returns a non-empty string', function () {
-                assert.isString(outData);
-                assert.notEqual(outData, "");
+                expect(outData, 'to be a string');
+                expect(outData, 'not to equal', '');
             });
 
             it('Contains .filename somewhere', function () {
-                assert.include(outData, 'some/file');
+                expect(outData, 'to contain', 'some/file');
             });
 
             it('Contains .message somewhere', function () {
-                assert.include(outData, 'Bam! It broke.');
+                expect(outData, 'to contain', 'Bam! It broke.');
             });
 
             it('Contains .line somewhere', function () {
-                assert.include(outData, '42');
+                expect(outData, 'to contain', '42');
             });
 
             it('Contains .character somewhere', function () {
-                assert.include(outData, '9');
+                expect(outData, 'to contain', '9');
             });
 
         });
