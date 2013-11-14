@@ -43,8 +43,7 @@ var testTable = [{
     files: ['**', '!**/*.js'],
     name: 'returns no js-files',
     test: function (files, done) {
-        expect(files, 'to be an array');
-        expect(files, 'not to be empty');
+        expect(files, 'to be a non-empty array');
         files.forEach(function (f) {
             expect(f, 'not to match', /\.js$/);
         });

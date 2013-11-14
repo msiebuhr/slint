@@ -44,8 +44,7 @@ function generateTests(testName) {
 
         it('Does not return errors on OK data', function (done) {
             l('fileName', basicTests[testName].ok, {}, function (err, errors) {
-                expect(errors, 'to be an array');
-                expect(errors, 'to be empty');
+                expect(errors, 'to be an empty array');
                 done(err);
             });
         });

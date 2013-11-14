@@ -20,16 +20,14 @@ function loadTestCase(testName, cb) {
 describe('npm-packages', function () {
     it('should produce no errors when an installed package is listed under optionalDependencies', function (done) {
         loadTestCase('optionalDependencies', function (err, results) {
-            expect(results, 'to be an array');
-            expect(results, 'to be empty');
+            expect(results, 'to be an empty array');
             done(err);
         });
     });
 
     it('should produce no errors when no dependencies are listed in package.json and there is no node_modules folder', function (done) {
         loadTestCase('noDependenciesAndNoNodeModules', function (err, results) {
-            expect(results, 'to be an array');
-            expect(results, 'to be empty');
+            expect(results, 'to be an empty array');
             done(err);
         });
     });
@@ -64,8 +62,7 @@ describe('npm-packages', function () {
 
     it('should produce no errors when an optional dependency is not installed in node_modules', function (done) {
         loadTestCase('optionalDependencyNotInstalled', function (err, results) {
-            expect(results, 'to be an array');
-            expect(results, 'to be empty');
+            expect(results, 'to be an empty array');
             done(err);
         });
     });
