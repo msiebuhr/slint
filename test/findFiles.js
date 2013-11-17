@@ -7,12 +7,7 @@ describe('findFiles()', function () {
     it('Search for *.js in test/ returns on .js-files', function (done) {
         findFiles('test/', [], [ '.js' ], function (err, files) {
             if (err) { return done(err); }
-            expect(files, 'to be a non-empty array');
-
-            files.forEach(function (file) {
-                expect(file, 'to match', /\.js$/);
-            });
-
+            expect(files, 'to be a non-empty array whose items satisfy', 'to match', /\.js$/);
             done(err);
         });
     });
