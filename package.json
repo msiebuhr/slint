@@ -23,7 +23,7 @@
     "fsplusgit": "=0.1.6",
     "glob-papandreou": "=3.2.6-patch2",
     "jshint": "~2.1.10",
-    "less-papandreou": "=1.5.0-patch1",
+    "less": "=1.5.1",
     "minimatch": "~0.2.12",
     "optimist": "~0.6.0",
     "semver": "~2.1.0",
