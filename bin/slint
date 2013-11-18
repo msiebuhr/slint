@@ -60,12 +60,13 @@ function printVerbose() {
     process.stdout.write(Array.prototype.slice.call(arguments, 0).join(" ") + '\n');
 }
 
-var baseDir = process.cwd(),
-    defaultGlobDir = baseDir;
+var pathToConfigFile = Path.resolve(process.cwd(), args._[0]),
+    projectDir = Path.dirname(pathToConfigFile),
+    baseDir = projectDir,
+    defaultGlobDir = projectDir;
 
 function loadAndPreprocessDirectivesInConfigFile(cb) {
-    var pathToConfigFile = Path.resolve(process.cwd(), args._[0]),
-        pathToGitRepo,
+    var pathToGitRepo,
         gitIndexDir,
         configFileDirRelativeToWorkingCopy;
 
@@ -89,7 +90,6 @@ function loadAndPreprocessDirectivesInConfigFile(cb) {
         if (pathToGitRepo) {
             // Change to the same directory relative to the virtual gitFakeFs/HEAD directory:
             configFileDirRelativeToWorkingCopy = Path.dirname(Path.relative(Path.resolve(pathToGitRepo, '..'), pathToConfigFile)) || '.';
-
             baseDir = Path.resolve(pathToGitRepo, 'gitFakeFs', 'indexOrWorkingCopy', configFileDirRelativeToWorkingCopy);
             defaultGlobDir = Path.resolve(pathToGitRepo, 'gitFakeFs', 'changesInIndex', configFileDirRelativeToWorkingCopy);
             gitIndexDir = Path.resolve(pathToGitRepo, 'gitFakeFs', 'index', configFileDirRelativeToWorkingCopy);
@@ -218,7 +218,7 @@ loadAndPreprocessDirectivesInConfigFile(function (err, directives) {
 
         // Pipe the output to the default reporter, pipe that to stdout and
         // wait for it to finish.
-        defaultReporter(errorList, {})
+        defaultReporter(errorList, {baseDir: baseDir, projectDir: projectDir})
             .pipe(process.stdout)
             .on('end', function () {
                 // Set error-code to number of errors
