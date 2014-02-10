@@ -214,7 +214,8 @@ loadAndPreprocessDirectivesInConfigFile(function (err, directives) {
         });
     }, function (err, errorList) {
         if (err) {
-            process.stdout.write('FATAL ERROR: ' + err.message + '\n');
+            console.error('FATAL ERROR: ' + err.message + '\n');
+            process.exit(1);
             return;
         }
 
