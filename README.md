@@ -12,15 +12,15 @@ optionally, the linter configuration):
     [
         {
             "tool": "jshint",
-            "files": ["**/*.js", "!node_modules"],
+            "files": ["**/*.js", "!node_modules"]
         },
         {
-            "tool": "trailing-whitespace",
-            "files": ["**", "!node_modules"],
+            "tool": "trailing-spaces",
+            "files": ["**", "!node_modules"]
         },
         {
             "tool": "json",
-            "files": ["**/*.json", "!node_modules"],
+            "files": ["**/*.json", "!node_modules"]
         }
     ]
 
@@ -62,16 +62,16 @@ disallow it in front-end code.)
             "config": "./misc/jshint-nodejs.conf"
         },
         {
-            "tool": "trailing-whitespace",
-            "files": ["**", "!node_modules", "!3rdparty"],
+            "tool": "trailing-spaces",
+            "files": ["**", "!node_modules", "!3rdparty"]
         },
         {
             "tool": "json",
             "files": ["**/*.json", "!node_modules", "!3rdparty"],
-			"config": {
-				"indent": "  ",     // Use two spaces
-				"canonical": false  // Don't sort object keys
-			}
+            "config": {
+                "indent": "  ",     // Use two spaces
+                "canonical": false  // Don't sort object keys
+            }
         }
     ]
 
