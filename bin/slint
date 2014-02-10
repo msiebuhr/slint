@@ -7,6 +7,7 @@ var _ = require('underscore'),
     defaultReporter = require('../lib/reporters/default'),
     gitFileResolver = require('../lib/gitFileResolver'),
     fs = require('fs'),
+    stripJsonComments = require('strip-json-comments'),
     optimist = require('optimist');
 
 // Parse arguments
@@ -168,6 +169,10 @@ loadAndPreprocessDirectivesInConfigFile(function (err, directives) {
         var linter,
             linterFiles = directive.files || ['**'],
             linterSetup = directive.config || {};
+
+        if (typeof linterSetup === 'string') {
+            linterSetup = JSON.parse(stripJsonComments(fs.readFileSync(linterSetup, 'utf8')));
+        }
 
         try {
             linter = require('../lib/linters/' + directive.tool);
