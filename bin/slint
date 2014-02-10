@@ -225,11 +225,11 @@ loadAndPreprocessDirectivesInConfigFile(function (err, directives) {
         // Pipe the output to the default reporter, pipe that to stdout and
         // wait for it to finish.
         defaultReporter(errorList, {baseDir: baseDir, projectDir: projectDir})
-            .pipe(process.stdout)
             .on('end', function () {
                 // Set error-code to number of errors
-                process.exit(errorList ? Math.min(errorList.length, 254) : 0);
-            });
+                process.exit(errorList.length > 0 ? Math.min(errorList.length, 254) : 0);
+            })
+            .pipe(process.stdout);
     });
 });
 
