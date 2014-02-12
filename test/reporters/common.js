@@ -1,9 +1,7 @@
 var expect = require('unexpected'),
     stream = require('stream');
 
-/*global describe, it*/
-
-['default'].forEach(generateTests);
+/*global describe, it, before*/
 
 // Generate a test-suite for the given linter.
 function generateTests(reporterName) {
@@ -11,7 +9,7 @@ function generateTests(reporterName) {
         var r = require('../../lib/reporters/' + reporterName);
 
         it('Doesn\'t return anything without errors', function (done) {
-            var outData = "";
+            var outData = '';
 
             // Report!
             var out = r([], {});
@@ -26,7 +24,7 @@ function generateTests(reporterName) {
         });
 
         describe('When given an error', function () {
-            var outData = "";
+            var outData = '';
 
             before(function (done) {
                 // Report!
@@ -37,7 +35,9 @@ function generateTests(reporterName) {
                     message: 'Bam! It broke.'
                 }], {})
                 .on('data', function (d) { outData += d; })
-                .on('end', function () {done();});
+                .on('end', function () {
+                    done();
+                });
             });
 
             it('Returns a non-empty string', function () {
@@ -64,3 +64,5 @@ function generateTests(reporterName) {
         });
     });
 }
+
+['default'].forEach(generateTests);
