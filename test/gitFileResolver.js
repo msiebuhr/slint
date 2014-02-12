@@ -11,21 +11,21 @@ var testTable = [{
         files.forEach(function (f) { expect(f, 'to match', /\.js$/); });
         done();
     }
-},{
+}, {
     files: ['**/*.js', '!node_modules'],
     name: 'returns nothing in node_modules',
     test: function (files, done) {
         expect(files, 'to be an array whose items satisfy', 'not to contain', 'node_modules');
         done();
     }
-},{
+}, {
     files: ['*.fake_ext'],
     name: 'returns no files',
     test: function (files, done) {
         expect(files, 'to be empty');
         done();
     }
-},{
+}, {
     files: ['bin/*'],
     name: 'returns (at least) bin/slint',
     test: function (files, done) {
@@ -39,14 +39,14 @@ var testTable = [{
         expect(files, 'to equal', ['package.json']);
         done();
     }
-},{
+}, {
     files: ['**', '!**/*.js'],
     name: 'returns no js-files',
     test: function (files, done) {
         expect(files, 'to be a non-empty array whose items satisfy', 'not to match', /\.js$/);
         done();
     }
-},{
+}, {
     files: ['**'],
     name: 'returns no directories',
     test: function (files, done) {
