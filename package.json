@@ -6,7 +6,7 @@
     "test": "mocha",
     "lint": "bin/slint slint.json",
     "precommit": "bin/slint slint.json --git",
-    "postinstall": "ln -sf ../../git-hooks/pre-commit .git/hooks/",
+    "postinstall": "if [ -d '.git' ]; then ln -sf ../../git-hooks/pre-commit .git/hooks/; fi",
     "prepublish": "npm run lint && npm run test"
   },
   "repository": {
