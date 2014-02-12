@@ -29,12 +29,12 @@ var argparser = optimist
     .options('cache', {
         boolean: true,
         default: false,
-        description: 'Cache the results of file system operations (experimental)'
+        description: 'EXPERIMENTAL: Cache the results of file system operations'
     })
     .options('git', {
         // TODO: Make it possible to address arbitrary branches/tags/commits, the index or the changes in the index.
         // This is already supported by fsplusgit, it just needs to be mapped to command line switches
-        description: 'Work on the staged changes of the current git repository (implicitly turns on --cache)',
+        description: 'EXPERIMENTAL: Work on the staged changes of the current git repository (implicitly turns on --cache)',
         default: false,
         boolean: true
     })
