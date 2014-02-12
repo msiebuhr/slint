@@ -20,7 +20,7 @@ describe('less', function () {
         loadTestCase('importedFileNotFound.less', function (err, results) {
             expect(results, 'to be an array');
             expect(results, 'to have length', 1);
-            expect(results[0].message, 'to equal', "'notFound.less' wasn't found.");
+            expect(results[0].message, 'to equal', '"notFound.less" wasn\'t found.');
             done(err);
         });
     });
