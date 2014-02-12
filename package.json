@@ -3,7 +3,10 @@
   "version": "0.0.0",
   "description": "Linting gone overboard",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "lint": "bin/slint slint.json",
+    "precommit": "bin/slint slint.json --git",
+    "postinstall": "ln -sf ../../git-hooks/pre-commit .git/hooks/"
   },
   "repository": {
     "type": "git",

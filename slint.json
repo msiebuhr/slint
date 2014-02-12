@@ -17,7 +17,8 @@
     },
     {
         "tool": "jshint",
-        "files": [ "**/*.js", "!node_modules" ]
+        "files": [ "**/*.js", "!node_modules" ],
+        "config": ".jshintrc"
     },
     {
         "tool": "json",
