@@ -1,7 +1,7 @@
 var expect = require('unexpected'),
     fs = require('fs');
 
-/*global describe, it*/
+/*global describe, it, before*/
 
 var basicTests = {
     'trailing-spaces': {
@@ -24,8 +24,8 @@ var basicTests = {
         ok: '{"foo": "bar"}',
         fail: '{x}'
     },
-    less: {
-        ok: "@base: #fff;",
+    'less': {
+        ok: '@base: #fff;',
         fail: '@import "foobar"'
     },
     'npm-packages': {
@@ -33,9 +33,6 @@ var basicTests = {
         fail: '{}'
     }
 };
-
-// Loop through basic tests
-for (var testName in basicTests) { generateTests(testName); }
 
 // Generate a test-suite for the given linter.
 function generateTests(testName) {
@@ -94,3 +91,6 @@ function generateTests(testName) {
         });
     });
 }
+
+// Loop through basic tests
+Object.keys(basicTests).forEach(generateTests);
