@@ -24,7 +24,7 @@
   "dependencies": {
     "async": "~0.2.9",
     "cachedfs": "=0.3.1",
-    "fsplusgit": "=0.1.7",
+    "fsplusgit": "=0.2.0",
     "glob-papandreou": "=3.2.6-patch2",
     "jshint": "~2.4.3",
     "less": "=1.5.1",
